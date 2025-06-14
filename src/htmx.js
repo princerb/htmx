@@ -4468,7 +4468,7 @@ var htmx = (function() {
         responseInfo.pathInfo.responsePath = getPathFromResponse(xhr)
         responseHandler(elt, responseInfo)
         if (responseInfo.keepIndicators !== true) {
-          removeRequestIndicators(indicators, disableElts)
+          removeRequestIndicators(indicators, disableElts, classElts)
         }
         triggerEvent(elt, 'htmx:afterRequest', responseInfo)
         triggerEvent(elt, 'htmx:afterOnLoad', responseInfo)
@@ -4495,21 +4495,21 @@ var htmx = (function() {
       }
     }
     xhr.onerror = function() {
-      removeRequestIndicators(indicators, disableElts)
+      removeRequestIndicators(indicators, disableElts, classElts)
       triggerErrorEvent(elt, 'htmx:afterRequest', responseInfo)
       triggerErrorEvent(elt, 'htmx:sendError', responseInfo)
       maybeCall(reject)
       endRequestLock()
     }
     xhr.onabort = function() {
-      removeRequestIndicators(indicators, disableElts)
+      removeRequestIndicators(indicators, disableElts, classElts)
       triggerErrorEvent(elt, 'htmx:afterRequest', responseInfo)
       triggerErrorEvent(elt, 'htmx:sendAbort', responseInfo)
       maybeCall(reject)
       endRequestLock()
     }
     xhr.ontimeout = function() {
-      removeRequestIndicators(indicators, disableElts)
+      removeRequestIndicators(indicators, disableElts, classElts)
       triggerErrorEvent(elt, 'htmx:afterRequest', responseInfo)
       triggerErrorEvent(elt, 'htmx:timeout', responseInfo)
       maybeCall(reject)
@@ -4522,6 +4522,7 @@ var htmx = (function() {
     }
     var indicators = addRequestIndicatorClasses(elt)
     var disableElts = disableElements(elt)
+    var classElts = addClassesToElements(elt)
 
     forEach(['loadstart', 'loadend', 'progress', 'abort'], function(eventName) {
       forEach([xhr, xhr.upload], function(target) {
@@ -5081,6 +5082,68 @@ var htmx = (function() {
       body = null // kill reference for gc
     }, 0)
   })
+
+  /**
+   * @param {Element} elt
+   * @returns {Element[]}
+   */
+  function addClassesToElements(elt) {
+    let classElts = /** @type Element[] */ (findAttributeTargets(elt, 'hx-add-cls-elt'))
+    if (classElts == null) {
+      classElts = []
+    }
+    const classesToAdd = getClosestAttributeValue(elt, 'hx-add-cls')
+    if (classesToAdd) {
+      forEach(classElts, function(classElement) {
+        const internalData = getInternalData(classElement)
+        internalData.requestCount = (internalData.requestCount || 0) + 1
+        const classes = classesToAdd.split(' ')
+        forEach(classes, function(clazz) {
+          if (clazz) classElement.classList.add(clazz)
+        })
+        classElement.setAttribute('data-classes-added-by-htmx', classesToAdd)
+      })
+    }
+    return classElts
+  }
+
+  /**
+   * @param {Element[]} indicators
+   * @param {Element[]} disabled
+   * @param {Element[]} classElts
+   */
+  function removeRequestIndicators(indicators, disabled, classElts) {
+    forEach(indicators.concat(disabled).concat(classElts || []), function(ele) {
+      const internalData = getInternalData(ele)
+      internalData.requestCount = (internalData.requestCount || 1) - 1
+    })
+    forEach(indicators, function(ic) {
+      const internalData = getInternalData(ic)
+      if (internalData.requestCount === 0) {
+        ic.classList.remove.call(ic.classList, htmx.config.requestClass)
+      }
+    })
+    forEach(disabled, function(disabledElement) {
+      const internalData = getInternalData(disabledElement)
+      if (internalData.requestCount === 0) {
+        disabledElement.removeAttribute('disabled')
+        disabledElement.removeAttribute('data-disabled-by-htmx')
+      }
+    })
+    forEach(classElts || [], function(classElement) {
+      const internalData = getInternalData(classElement)
+      if (internalData.requestCount === 0) {
+        const classesToRemove = classElement.getAttribute('data-classes-added-by-htmx')
+        if (classesToRemove) {
+          const classes = classesToRemove.split(' ')
+          forEach(classes, function(clazz) {
+            if (clazz) classElement.classList.remove(clazz)
+          })
+          classElement.removeAttribute('data-classes-added-by-htmx')
+        }
+      }
+    })
+  }
 
   return htmx
 })()
