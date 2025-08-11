@@ -91,12 +91,6 @@ if(window.location.search=="?ads=true") {
 </a>
 </div>
 
-<div class="alert">
-<b>NEWS:</b> htmx 2.0 has been released!  It is not currently marked as <a href="https://docs.npmjs.com/cli/v10/commands/npm-dist-tag#purpose"><code>latest</code></a>
-in NPM so that people using the <a href="https://v1.htmx.org">1.x line</a> are not accidentally upgraded.  We will mark
-2.0 as <code>latest</code> at some point in 2025.
-</div>
-
 <h2>introduction</h2>
 
 htmx gives you access to [AJAX](@/docs.md#ajax), [CSS Transitions](@/docs.md#css_transitions), [WebSockets](@/docs.md#websockets-and-sse) and [Server Sent Events](@/docs.md#websockets-and-sse)
@@ -104,7 +98,7 @@ directly in HTML, using [attributes](@/reference.md#attributes), so you can buil
 [modern user interfaces](@/examples/_index.md) with the [simplicity](https://en.wikipedia.org/wiki/HATEOAS) and
 [power](https://www.ics.uci.edu/~fielding/pubs/dissertation/rest_arch_style.htm) of hypertext
 
-htmx is small ([~14k min.gz'd](https://unpkg.com/htmx.org/dist/)),
+htmx is small ([~14k min.gz'd](https://cdn.jsdelivr.net/npm/htmx.org/dist/)),
 [dependency-free](https://github.com/bigskysoftware/htmx/blob/master/package.json),
 [extendable](https://htmx.org/extensions) & has **reduced** code base sizes by [67% when compared with react](@/essays/a-real-world-react-to-htmx-port.md)
 
@@ -120,7 +114,7 @@ By removing these constraints, htmx completes HTML as a [hypertext](https://en.w
 <h2>quick start</h2>
 
 ```html
-  <script src="https://unpkg.com/htmx.org@2.0.4"></script>
+  <script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.6/dist/htmx.min.js"></script>
   <!-- have a button POST a click via AJAX -->
   <button hx-post="/clicked" hx-swap="outerHTML">
     Click Me
@@ -264,7 +258,7 @@ Thank you to all our generous <a href="https://github.com/sponsors/bigskysoftwar
 <div>
     <a data-github-account="tracebit-com" href="https://tracebit.com/?utm_source=htmx">
       <img class="dark-hidden" alt="Tracebit Cloud Canaries" src="/img/tracebit-logo.png">
-      <img class="dark-visbile" alt="Tracebit Cloud Canaries" src="/img/tracebit-logo-dark.png">
+      <img class="dark-visible" alt="Tracebit Cloud Canaries" src="/img/tracebit-logo-dark.png">
     </a>
 </div>
 <div>
@@ -338,6 +332,13 @@ Thank you to all our generous <a href="https://github.com/sponsors/bigskysoftwar
         <a data-github-account="radioplusexperts" alt="Assignment Writing service" href="https://edubirdie.com/do-my-assignment">
            <img class="dark-hidden" src="/img/edubirdie-light.png" style="width:100%;max-width:250px">
            <img class="dark-visible" src="/img/edubirdie-dark.png" style="width:100%;max-width:250px">
+        </a>
+</div>
+<div></div>
+<div>
+        <a data-github-account="TrackityApp" alt="Trackity server side tracking" href="https://www.trackity.com">
+           <img class="dark-hidden" src="/img/trackity-light.png" style="width:100%;max-width:250px">
+           <img class="dark-visible" src="/img/trackity-dark.png" style="width:100%;max-width:250px">
         </a>
 </div>
 </div>
